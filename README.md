@@ -1,12 +1,42 @@
-- 👋 Hi, I’m @Khamdanfakhryza
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
+# Belajar Analisis Data dengan Python
 
-<!---
-Khamdanfakhryza/Khamdanfakhryza is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+## Dataset: Air Quality
+
+[Air Quality Dataset](https://github.com/marceloreis/HTI/tree/master)
+
+## Streamlit Cloud :
+
+Streamlit Cloud : (https://dicoding-airquality-naufal-rafid.streamlit.app/)
+
+![Air Quality Dashboard Preview](images/dashboard.png)
+
+## Setup environment
+
+- Install Visual Studio Code for Editor
+- Execute this command on command line ( as administrator prefered)
+
+```
+pip install numpy pandas scipy matplotlib seaborn jupyter
+```
+
+## Project installation
+
+The steps to create your virtual environment from this project is as follows:
+
+1. Clone this repository
+
+   ```
+   git clone https://github.com/NaufalR12/dicoding-airquality.git
+   ```
+
+2. Move to directory dicoding-airquality/
+   ```
+   cd dicoding-airquality
+   ```
+3. Run streamlit app
+   ```
+   streamlit run dashboard.py
+   ```
+4. Stop the application program by `ctrl + c`.
+
+**Thank youuu!!**
