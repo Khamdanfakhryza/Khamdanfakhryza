@@ -23,7 +23,7 @@
 """
 ## Import Semua Packages/Library yang Digunakan
 """
-
+pip install numpy pandas scipy matplotlib seaborn jupyter
 # %%
 import numpy as np  # Untuk operasi numerik
 import pandas as pd  # Untuk manipulasi data\import matplotlib.pyplot as plt  # Untuk visualisasi\import seaborn as sns  # Untuk plotting berbasis statistik
