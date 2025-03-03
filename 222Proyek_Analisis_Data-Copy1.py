@@ -86,18 +86,18 @@ for loc in locations:
 import pandas as pd
 
 # Load the CSV files into DataFrames
-df_Aotizhongxin = pd.read_csv('/Air-quality-dataset/PRSA_Data_Aotizhongxin_20130301-20170228.csv')
-df_Changping = pd.read_csv('/Air-quality-dataset/PRSA_Data_Changping_20130301-20170228.csv')
-df_Dingling = pd.read_csv('/Air-quality-dataset/PRSA_Data_Dingling_20130301-20170228.csv')
-df_Dongsi = pd.read_csv('/Air-quality-dataset/PRSA_Data_Dongsi_20130301-20170228.csv')
-df_Guanyuan = pd.read_csv('/Air-quality-dataset/PRSA_Data_Guanyuan_20130301-20170228.csv')
-df_Gucheng = pd.read_csv('/Air-quality-dataset/PRSA_Data_Gucheng_20130301-20170228.csv')
-df_Huairou = pd.read_csv('/Air-quality-dataset/PRSA_Data_Huairou_20130301-20170228.csv')
-df_Nongzhanguan = pd.read_csv('/Air-quality-dataset/PRSA_Data_Nongzhanguan_20130301-20170228.csv')
-df_Shunyi = pd.read_csv('/Air-quality-dataset/PRSA_Data_Shunyi_20130301-20170228.csv')
-df_Tiantan = pd.read_csv('/Air-quality-dataset/PRSA_Data_Tiantan_20130301-20170228.csv')
-df_Wanliu = pd.read_csv('/Air-quality-dataset/PRSA_Data_Wanliu_20130301-20170228.csv')
-df_Wanshouxigong = pd.read_csv('/Air-quality-dataset/PRSA_Data_Wanshouxigong_20130301-20170228.csv')
+df_Aotizhongxin = pd.read_csv('Air-quality-dataset/PRSA_Data_Aotizhongxin_20130301-20170228.csv')
+df_Changping = pd.read_csv('Air-quality-dataset/PRSA_Data_Changping_20130301-20170228.csv')
+df_Dingling = pd.read_csv('Air-quality-dataset/PRSA_Data_Dingling_20130301-20170228.csv')
+df_Dongsi = pd.read_csv('Air-quality-dataset/PRSA_Data_Dongsi_20130301-20170228.csv')
+df_Guanyuan = pd.read_csv('Air-quality-dataset/PRSA_Data_Guanyuan_20130301-20170228.csv')
+df_Gucheng = pd.read_csv('Air-quality-dataset/PRSA_Data_Gucheng_20130301-20170228.csv')
+df_Huairou = pd.read_csv('Air-quality-dataset/PRSA_Data_Huairou_20130301-20170228.csv')
+df_Nongzhanguan = pd.read_csv('Air-quality-dataset/PRSA_Data_Nongzhanguan_20130301-20170228.csv')
+df_Shunyi = pd.read_csv('Air-quality-dataset/PRSA_Data_Shunyi_20130301-20170228.csv')
+df_Tiantan = pd.read_csv('Air-quality-dataset/PRSA_Data_Tiantan_20130301-20170228.csv')
+df_Wanliu = pd.read_csv('Air-quality-dataset/PRSA_Data_Wanliu_20130301-20170228.csv')
+df_Wanshouxigong = pd.read_csv('Air-quality-dataset/PRSA_Data_Wanshouxigong_20130301-20170228.csv')
 
 
 # %%
@@ -105,7 +105,7 @@ import pandas as pd
 import os
 
 # Pastikan lokasi folder sesuai dengan lokasi tempat file diunduh oleh gdown
-folder_path = "/Air-quality-dataset"
+folder_path = "Air-quality-dataset"
 
 # Daftar lokasi yang akan diproses
 locations = [
