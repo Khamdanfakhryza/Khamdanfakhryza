@@ -30,7 +30,7 @@ The steps to create your virtual environment from this project is as follows:
 
 2. Move to directory dicoding-airquality/
    ```
-   cd dicoding-airquality
+   cd Khamdanfakhryza
    ```
 3. Run streamlit app
    ```
