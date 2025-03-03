@@ -18,15 +18,6 @@
 - 3. Bagaimana hujan mempengaruhi tingkat polusi Udara akibat polutan tertentu?
 - 4. Bagaimana kaitan antara konsentrasi NO2  dan CO  dalam P=rposes pembentukan O3 ?
 """
-import subprocess
-import sys
-
-def install_packages():
-    packages = ['numpy', 'pandas', 'scipy', 'matplotlib', 'seaborn', 'jupyter']
-    for package in packages:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-install_packages()
 # %%
 """
 ## Import Semua Packages/Library yang Digunakan
