@@ -30,15 +30,95 @@ st.markdown("---")
 # ==========================================
 # Fungsi Utama
 # ==========================================
-@st.cache_data
-def load_data():
-    # [Tetap sama dengan sebelumnya]
-    # ... (kode loading data sebelumnya)
+def load_and_validate_data():
+    """Memuat dan memvalidasi dataset"""
+    folder_path = "Air-quality-dataset"
+    locations = [
+        "Aotizhongxin", "Changping", "Dingling", "Dongsi", "Guanyuan", 
+        "Gucheng", "Huairou", "Nongzhanguan", "Shunyi", "Tiantan", 
+        "Wanliu", "Wanshouxigong"
+    ]
+    
+    # Validasi folder
+    if not os.path.exists(folder_path):
+        st.error(f"🚨 Folder '{folder_path}' tidak ditemukan!")
+        st.markdown("""
+        **Struktur folder yang diperlukan:**
+        ```
+        project_folder/
+        ├── air_quality_app.py
+        └── Air-quality-dataset/
+            ├── PRSA_Data_Aotizhongxin_20130301-20170228.csv
+            ├── PRSA_Data_Changping_20130301-20170228.csv
+            └── ... (file lainnya)
+        ```
+        """)
+        st.stop()
 
-@st.cache_data 
+    dataframes = {}
+    missing_files = []
+
+    # Memuat data
+    with st.spinner("🔍 Memuat dataset..."):
+        for loc in locations:
+            file_path = os.path.join(folder_path, f"PRSA_Data_{loc}_20130301-20170228.csv")
+            
+            if os.path.isfile(file_path):
+                try:
+                    df = pd.read_csv(file_path)
+                    if not df.empty:
+                        dataframes[loc] = df
+                        st.success(f"✅ {loc:20} : {len(df):,} records")
+                    else:
+                        missing_files.append(file_path)
+                except Exception as e:
+                    st.error(f"❌ Gagal memuat {loc}: {str(e)}")
+            else:
+                missing_files.append(file_path)
+
+    # Validasi file yang hilang
+    if missing_files:
+        st.warning("⚠️ File berikut tidak ditemukan:")
+        for f in missing_files:
+            st.write(f"- {os.path.basename(f)}")
+    
+    return dataframes
+
+@st.cache_data
 def process_data(dataframes):
-    # [Tetap sama dengan sebelumnya]
-    # ... (kode processing data sebelumnya)
+    """Memproses dan membersihkan data"""
+    with st.spinner("🧹 Memproses data..."):
+        try:
+            # Gabungkan semua dataframe
+            df_all = pd.concat(dataframes.values(), ignore_index=True)
+            
+            # Konversi ke datetime
+            df_all['date_time'] = pd.to_datetime(
+                df_all[['year', 'month', 'day', 'hour']].rename(columns={
+                    'year': 'year',
+                    'month': 'month',
+                    'day': 'day',
+                    'hour': 'hour'
+                })
+            )
+            
+            # Handle missing values
+            df_all = df_all.dropna()
+            
+            # Tambahkan fitur tambahan
+            df_all['month'] = df_all['date_time'].dt.month
+            df_all['year'] = df_all['date_time'].dt.year
+            df_all['season'] = df_all['month'].apply(
+                lambda x: 'Winter' if x in [12,1,2] else 
+                'Spring' if x in [3,4,5] else 
+                'Summer' if x in [6,7,8] else 'Autumn')
+            
+            return df_all
+        except Exception as e:
+            st.error(f"❌ Kesalahan pemrosesan data: {str(e)}")
+            st.stop()
+
+
 
 # ==========================================
 # Memuat Data
@@ -62,6 +142,87 @@ analysis_option = st.sidebar.radio(
 # ==========================================
 # Visualisasi untuk Setiap Pertanyaan
 # ==========================================
+if analysis_option == "Dashboard Utama":
+    st.header("📈 Dashboard Utama")
+    
+    # Metrics
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total Data Points", f"{len(df_all):,}")
+    with col2:
+        st.metric("Lokasi Monitoring", len(dataframes))
+    with col3:
+        st.metric("Rentang Waktu", 
+                 f"{df_all['date_time'].min().date()} - {df_all['date_time'].max().date()}")
+
+    st.markdown("---")
+    
+    # Scatter Plot
+    st.subheader("Hubungan Kecepatan Angin vs PM2.5")
+    fig1, ax1 = plt.subplots(figsize=(10, 5))
+    sns.scatterplot(
+        data=df_all.sample(1000),
+        x='WSPM', 
+        y='PM2.5',
+        hue='season',
+        palette='viridis',
+        ax=ax1
+    )
+    st.pyplot(fig1)
+
+elif analysis_option == "Analisis Temporal":
+    st.header("🕰️ Analisis Temporal")
+    
+    # Time Series Analysis
+    col1, col2 = st.columns(2)
+    with col1:
+        selected_pollutant = st.selectbox(
+            "Pilih Polutan:",
+            ['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3']
+        )
+    
+    with col2:
+        time_resolution = st.selectbox(
+            "Resolusi Waktu:",
+            ['Harian', 'Bulanan', 'Tahunan']
+        )
+    
+    resample_map = {
+        'Harian': 'D',
+        'Bulanan': 'M',
+        'Tahunan': 'Y'
+    }
+    
+    df_resampled = df_all.resample(resample_map[time_resolution], on='date_time')[selected_pollutant].mean().reset_index()
+    
+    fig2, ax2 = plt.subplots(figsize=(12, 6))
+    sns.lineplot(
+        data=df_resampled,
+        x='date_time',
+        y=selected_pollutant,
+        marker='o',
+        ax=ax2
+    )
+    plt.xticks(rotation=45)
+    st.pyplot(fig2)
+
+elif analysis_option == "Korelasi Polutan":
+    st.header("🔗 Analisis Korelasi")
+    
+    # Heatmap
+    st.subheader("Matriks Korelasi Polutan")
+    corr_matrix = df_all[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'WSPM']].corr()
+    
+    fig3, ax3 = plt.subplots(figsize=(12, 8))
+    sns.heatmap(
+        corr_matrix,
+        annot=True,
+        cmap='coolwarm',
+        vmin=-1,
+        vmax=1,
+        ax=ax3
+    )
+    st.pyplot(fig3)
 
 # Pertanyaan 1: Dampak Angin (WSPM) terhadap PM2.5
 if analysis_option == "1. Angin vs PM2.5":
