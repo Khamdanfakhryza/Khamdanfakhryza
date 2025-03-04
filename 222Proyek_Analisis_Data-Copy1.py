@@ -272,37 +272,45 @@ with col2:
 elif analysis_option == "3. Pengaruh Hujan":
     st.header("🌧️ Pengaruh Curah Hujan terhadap Polusi Udara")
     
-    # Kategorisasi hujan
-    df_all['Rain Intensity'] = pd.cut(df_all['RAIN'],
-                                    bins=[-1, 0, 2.5, 7.6, 100],
-                                    labels=['Tidak Hujan', 'Hujan Ringan', 
-                                            'Hujan Sedang', 'Hujan Lebat'])
+    # Pastikan kolom RAIN tersedia
+    if 'RAIN' in df_all.columns:
+        # Kategorisasi hujan
+        df_all['Rain Intensity'] = pd.cut(df_all['RAIN'],
+                                        bins=[-1, 0, 2.5, 7.6, 100],
+                                        labels=['Tidak Hujan', 'Hujan Ringan', 
+                                                'Hujan Sedang', 'Hujan Lebat'])
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader("Distribusi PM2.5 per Intensitas Hujan")
+            fig3, ax = plt.subplots(figsize=(10, 6))
+            sns.boxplot(
+                data=df_all,
+                x='Rain Intensity',
+                y='PM2.5',
+                order=['Tidak Hujan','Hujan Ringan','Hujan Sedang','Hujan Lebat'],
+                palette="GnBu",
+                ax=ax
+            )
+            ax.set_xlabel('Intensitas Hujan')
+            ax.set_ylabel('Konsentrasi PM2.5')
+            st.pyplot(fig3)
+        
+        with col2:
+            st.subheader("Perubahan Polutan Setelah Hujan")
+            df_rain_effect = df_all.groupby('Rain Intensity')[['PM2.5','SO2','NO2']].mean()
+            
+            # Buat figure baru agar tidak bentrok dengan plot sebelumnya
+            fig4, ax = plt.subplots(figsize=(10, 6))
+            df_rain_effect.plot(kind='bar', ax=ax, colormap='coolwarm')
+            ax.set_xlabel('Intensitas Hujan')
+            ax.set_ylabel('Rata-rata Konsentrasi')
+            ax.set_xticklabels(df_rain_effect.index, rotation=0)
+            st.pyplot(fig4)
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Distribusi PM2.5 per Intensitas Hujan")
-        fig3 = plt.figure(figsize=(10,6))
-        sns.boxplot(
-            data=df_all,
-            x='Rain Intensity',
-            y='PM2.5',
-            order=['Tidak Hujan','Hujan Ringan','Hujan Sedang','Hujan Lebat'],
-            palette="GnBu"
-        )
-        plt.xlabel('Intensitas Hujan')
-        plt.ylabel('Konsentrasi PM2.5')
-        st.pyplot(fig3)
-    
-    with col2:
-        st.subheader("Perubahan Polutan Setelah Hujan")
-        df_rain_effect = df_all.groupby('Rain Intensity')[['PM2.5','SO2','NO2']].mean()
-        fig4 = plt.figure(figsize=(10,6))
-        df_rain_effect.plot(kind='bar', ax=plt.gca())
-        plt.xlabel('Intensitas Hujan')
-        plt.ylabel('Rata-rata Konsentrasi')
-        plt.xticks(rotation=0)
-        st.pyplot(fig4)
+    else:
+        st.error("Kolom 'RAIN' tidak ditemukan dalam dataset. Pastikan dataset sudah benar.")
 
 # ... (Visualisasi untuk pertanyaan 2 dan 4 tetap sama)
 
