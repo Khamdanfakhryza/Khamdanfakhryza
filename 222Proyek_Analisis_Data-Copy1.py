@@ -229,7 +229,7 @@ elif analysis_option == "Dampak Angin pada PM2.5":
         st.subheader("Tren Bulanan selama Musim Kemarau")
         fig2 = plt.figure(figsize=(10,6))
         sns.lineplot(
-            data = df_dry.groupby(['month', 'WSPM'])['PM2.5'].mean().reset_index()
+            data = df_dry.groupby(['month', 'WSPM'])['PM2.5'].mean().reset_index(),
             x='WSPM',
             y='PM2.5',
             hue='month',
