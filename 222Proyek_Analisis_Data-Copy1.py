@@ -247,20 +247,26 @@ if analysis_option == "1. Angin vs PM2.5":
         plt.ylabel('Konsentrasi PM2.5')
         st.pyplot(fig1)
     
-    with col2:
-        st.subheader("Tren Bulanan selama Musim Kemarau")
-        fig2 = plt.figure(figsize=(10,6))
-        sns.lineplot(
-            data=df_dry.groupby(['month','WSPM']).PM2.5.mean().reset_index(),
-            x='WSPM',
-            y='PM2.5',
-            hue='month',
-            marker='o',
-            palette="viridis"
-        )
-        plt.xlabel('Kecepatan Angin (m/s)')
-        plt.ylabel('Rata-rata PM2.5')
-        st.pyplot(fig2)
+with col2:
+    st.subheader("Tren Bulanan selama Musim Kemarau")
+    fig2 = plt.figure(figsize=(10,6))
+    
+    # Pastikan dataframe dikelompokkan dan dihitung dengan benar
+    df_dry_grouped = df_dry.groupby(['month', 'WSPM'])['PM2.5'].mean().reset_index()
+    
+    sns.lineplot(
+        data=df_dry_grouped,
+        x='WSPM',
+        y='PM2.5',
+        hue='month',
+        marker='o',
+        palette="viridis"
+    )
+    
+    plt.xlabel('Kecepatan Angin (m/s)')
+    plt.ylabel('Rata-rata PM2.5')
+    st.pyplot(fig2)
+
 
 # Pertanyaan 3: Pengaruh Hujan
 elif analysis_option == "3. Pengaruh Hujan":
