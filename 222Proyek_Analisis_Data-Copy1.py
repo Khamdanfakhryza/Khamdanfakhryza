@@ -142,88 +142,6 @@ analysis_option = st.sidebar.radio(
 # ==========================================
 # Visualisasi untuk Setiap Pertanyaan
 # ==========================================
-if analysis_option == "Dashboard Utama":
-    st.header("📈 Dashboard Utama")
-    
-    # Metrics
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Total Data Points", f"{len(df_all):,}")
-    with col2:
-        st.metric("Lokasi Monitoring", len(dataframes))
-    with col3:
-        st.metric("Rentang Waktu", 
-                 f"{df_all['date_time'].min().date()} - {df_all['date_time'].max().date()}")
-
-    st.markdown("---")
-    
-    # Scatter Plot
-    st.subheader("Hubungan Kecepatan Angin vs PM2.5")
-    fig1, ax1 = plt.subplots(figsize=(10, 5))
-    sns.scatterplot(
-        data=df_all.sample(1000),
-        x='WSPM', 
-        y='PM2.5',
-        hue='season',
-        palette='viridis',
-        ax=ax1
-    )
-    st.pyplot(fig1)
-
-elif analysis_option == "Analisis Temporal":
-    st.header("🕰️ Analisis Temporal")
-    
-    # Time Series Analysis
-    col1, col2 = st.columns(2)
-    with col1:
-        selected_pollutant = st.selectbox(
-            "Pilih Polutan:",
-            ['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3']
-        )
-    
-    with col2:
-        time_resolution = st.selectbox(
-            "Resolusi Waktu:",
-            ['Harian', 'Bulanan', 'Tahunan']
-        )
-    
-    resample_map = {
-        'Harian': 'D',
-        'Bulanan': 'M',
-        'Tahunan': 'Y'
-    }
-    
-    df_resampled = df_all.resample(resample_map[time_resolution], on='date_time')[selected_pollutant].mean().reset_index()
-    
-    fig2, ax2 = plt.subplots(figsize=(12, 6))
-    sns.lineplot(
-        data=df_resampled,
-        x='date_time',
-        y=selected_pollutant,
-        marker='o',
-        ax=ax2
-    )
-    plt.xticks(rotation=45)
-    st.pyplot(fig2)
-
-elif analysis_option == "Korelasi Polutan":
-    st.header("🔗 Analisis Korelasi")
-    
-    # Heatmap
-    st.subheader("Matriks Korelasi Polutan")
-    corr_matrix = df_all[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'WSPM']].corr()
-    
-    fig3, ax3 = plt.subplots(figsize=(12, 8))
-    sns.heatmap(
-        corr_matrix,
-        annot=True,
-        cmap='coolwarm',
-        vmin=-1,
-        vmax=1,
-        ax=ax3
-    )
-    st.pyplot(fig3)
-
 # Pertanyaan 1: Dampak Angin (WSPM) terhadap PM2.5
 if analysis_option == "1. Angin vs PM2.5":
     st.header("🌪️ Dampak Kecepatan Angin terhadap PM2.5")
@@ -247,28 +165,28 @@ if analysis_option == "1. Angin vs PM2.5":
         plt.ylabel('Konsentrasi PM2.5')
         st.pyplot(fig1)
     
-with col2:
-    st.subheader("Tren Bulanan selama Musim Kemarau")
-    fig2 = plt.figure(figsize=(10,6))
-    
-    # Pastikan dataframe dikelompokkan dan dihitung dengan benar
-    df_dry_grouped = df_dry.groupby(['month', 'WSPM'])['PM2.5'].mean().reset_index()
-    
-    sns.lineplot(
-        data=df_dry_grouped,
-        x='WSPM',
-        y='PM2.5',
-        hue='month',
-        marker='o',
-        palette="viridis"
-    )
-    
-    plt.xlabel('Kecepatan Angin (m/s)')
-    plt.ylabel('Rata-rata PM2.5')
-    st.pyplot(fig2)
+    # ⬇️ **Pindahkan `with col2:` ke dalam `if` ini!** ⬇️
+    with col2:
+        st.subheader("Tren Bulanan selama Musim Kemarau")
+        fig2 = plt.figure(figsize=(10,6))
+        
+        # Pastikan dataframe dikelompokkan dan dihitung dengan benar
+        df_dry_grouped = df_dry.groupby(['month', 'WSPM'])['PM2.5'].mean().reset_index()
+        
+        sns.lineplot(
+            data=df_dry_grouped,
+            x='WSPM',
+            y='PM2.5',
+            hue='month',
+            marker='o',
+            palette="viridis"
+        )
+        
+        plt.xlabel('Kecepatan Angin (m/s)')
+        plt.ylabel('Rata-rata PM2.5')
+        st.pyplot(fig2)
 
-
-# Pertanyaan 3: Pengaruh Hujan
+# **Setelah `if` selesai, baru bisa lanjut ke `elif` berikutnya!**
 elif analysis_option == "3. Pengaruh Hujan":
     st.header("🌧️ Pengaruh Curah Hujan terhadap Polusi Udara")
     
