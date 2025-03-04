@@ -5,6 +5,7 @@
 [Air Quality Dataset](https://github.com/marceloreis/HTI/tree/master)
 
 ## Streamlit Cloud :
+![dashbord](https://github.com/user-attachments/assets/8d44ec97-771a-466c-8b90-cd9d703226c0)
 
 Streamlit Cloud : (https://khamdanfakhryza.streamlit.app/)
 
