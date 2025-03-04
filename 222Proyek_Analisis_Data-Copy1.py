@@ -221,6 +221,28 @@ if show_raw_data:
     )
 
 # ==========================================
+# Menampilkan Kesimpulan
+# ==========================================
+st.sidebar.markdown("---")
+if st.sidebar.button("Tampilkan Kesimpulan"):
+    st.header("Kesimpulan")
+    st.markdown("""
+    1. **Angin & PM2.5**: Kecepatan angin mempengaruhi penyebaran PM2.5 dengan pola non-linear.
+    2. **Polutan Kendaraan**: NO2 dan CO menunjukkan korelasi kuat dengan aktivitas transportasi.
+    3. **Hujan**: Intensitas hujan >4mm/jam mengurangi PM2.5 hingga 30%.
+    4. **O3**: Konsentrasi O3 berbanding terbalik dengan NO2 saat musim panas.
+    """)
+
+# Menampilkan Data
+if st.sidebar.checkbox("Tampilkan Data Mentah"):
+    st.subheader("Data Sample")
+    st.write(df_all.sample(1000))
+Cara Menjalankan:
+
+
+
+
+# ==========================================
 # Footer
 # ==========================================
 st.markdown("---")
