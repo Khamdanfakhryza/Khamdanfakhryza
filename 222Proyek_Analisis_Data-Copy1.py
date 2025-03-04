@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Proyek Analisis Data: Air Quality Dataset (Final Version)"""
-- **Nama:** Khamdan Annas Fakhryza
-- **Email:** Khamdan@std.unissul.ac.id
-- **ID Dicoding:** khamdan-fakhryza
+#- **Nama:** Khamdan Annas Fakhryza
+#- **Email:** Khamdan@std.unissul.ac.id
+#- **ID Dicoding:** khamdan-fakhryza
 
 import pandas as pd
 import matplotlib.pyplot as plt
