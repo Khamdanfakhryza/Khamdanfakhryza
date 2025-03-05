@@ -223,22 +223,22 @@ elif analysis_option == "Pengaruh Hujan":
         st.pyplot(fig4)
 
 elif analysis_option == "Kesimpulan Utama":
-st.header("📌 Kesimpulan Utama")
-st.markdown("""
-### 1. Tren PM2.5
-- Konsentrasi PM2.5 cenderung lebih tinggi pada musim dingin.
-- Penurunan PM2.5 terlihat di musim panas, kemungkinan karena hujan lebih sering.
+    st.header("📌 Kesimpulan Utama")
+    st.markdown("""
+    ### 1. Tren PM2.5
+    - Konsentrasi PM2.5 cenderung lebih tinggi pada musim dingin.
+    - Penurunan PM2.5 terlihat di musim panas, kemungkinan karena hujan lebih sering.
 
-### 2. Korelasi Polutan
-- PM2.5 memiliki korelasi tinggi dengan PM10 dan NO2, menunjukkan pengaruh aktivitas kendaraan.
-- Ozon (O3) menunjukkan korelasi negatif dengan NO2, mencerminkan reaksi fotokimia.
+    ### 2. Korelasi Polutan
+    - PM2.5 memiliki korelasi tinggi dengan PM10 dan NO2, menunjukkan pengaruh aktivitas kendaraan.
+    - Ozon (O3) menunjukkan korelasi negatif dengan NO2, mencerminkan reaksi fotokimia.
 
-### 3. Pengaruh Kecepatan Angin
-- Kecepatan angin lebih tinggi cenderung menurunkan konsentrasi PM2.5.
+    ### 3. Pengaruh Kecepatan Angin
+    - Kecepatan angin lebih tinggi cenderung menurunkan konsentrasi PM2.5.
 
-### 4. Pengaruh Curah Hujan
-- Curah hujan yang tinggi secara signifikan menurunkan konsentrasi PM2.5.
-""")
+    ### 4. Pengaruh Curah Hujan
+    - Curah hujan yang tinggi secara signifikan menurunkan konsentrasi PM2.5.
+    """)
 
 # ==========================================
 # Tampilkan Data Mentah
