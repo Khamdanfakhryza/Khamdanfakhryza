@@ -113,9 +113,7 @@ analysis_option = st.sidebar.radio(
      "Analisis Temporal", 
      "Korelasi Polutan",
      "Dampak Angin pada PM2.5",
-     "Polutan Kendaraan",
      "Pengaruh Hujan",
-     "Pembentukan Ozon",
      "Kesimpulan Utama",
      "Data Mentah"]
 )
@@ -280,22 +278,14 @@ elif analysis_option == "Kesimpulan Utama":
     ### 1. Dampak Kecepatan Angin (WSPM)
     - **Pola Inversi**: Angin >5 m/s mengurangi PM2.5 hingga 40% pada musim kemarau
     - **Efek Optimal**: Kecepatan 2-3 m/s menunjukkan penurunan PM2.5 terbaik
-    
-    ### 2. Polutan Kendaraan
-    - **Korelasi Tinggi**: NO2 dan CO menunjukkan korelasi 0.78 dengan PM2.5
-    - **Pola Harian**: Puncak konsentrasi terjadi jam 7-9 pagi dan 5-7 malam
-    
-    ### 3. Pengaruh Curah Hujan
+          
+    ### 2. Pengaruh Curah Hujan
     - **Efek Pencucian**: Hujan >7.6mm mengurangi PM2.5 hingga 55%
     - **Efek Kumulatif**: Hujan 3 hari berturut mengurangi PM2.5 60-65%
     
-    ### 4. Analisis Temporal
+    ### 3. Analisis Temporal
     - **Pola Musiman**: PM2.5 tertinggi di musim dingin terendah di musim panas
     - **Perbaikan Tahunan**: Penurunan 15% PM2.5 selama 2013-2017
-    
-    ### 5. Pembentukan Ozon
-    - **Korelasi Negatif**: O3 dan NO2 (-0.65) menunjukkan hubungan fotokimia
-    - **Pola Harian**: Konsentrasi O3 puncak di siang hari (12-3 PM)
     """)
 
 # ==========================================
