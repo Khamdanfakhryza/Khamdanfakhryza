@@ -73,31 +73,33 @@ date_range = st.sidebar.slider("Pilih Rentang Waktu:",
 filtered_data = df_all[(df_all['location'] == selected_location) &
                        (df_all['date_time'].dt.date.between(date_range[0], date_range[1]))]
 
-    
-    col1, col2, col3 = st.columns(3)
+if analysis_option == "Dashboard Utama":  # ✅ Perbaikan: Tambahkan `if` sebelum indentasi
+    st.header("📈 Dashboard Utama")
+
+    col1, col2, col3 = st.columns(3)  # ✅ Indentasi benar
     with col1:
-        st.metric("Total Data Points", f"{len(df_all):,}")
+        st.metric("Total Data Points", f"{len(filtered_data):,}")  # ✅ Gunakan `filtered_data`
     with col2:
-        st.metric("Lokasi Monitoring", len(dataframes))
+        st.metric("Lokasi Terpilih", selected_location)
     with col3:
         st.metric("Rentang Waktu", 
-                 f"{df_all['date_time'].min().date()} - {df_all['date_time'].max().date()}")
+                 f"{date_range[0]} - {date_range[1]}")
 
     st.markdown("---")
     
-st.subheader("📊 Tren PM2.5 dalam Rentang Waktu")
-fig1, ax1 = plt.subplots(figsize=(12, 6))
-sns.lineplot(data=filtered_data, x='date_time', y='PM2.5', ax=ax1)
-plt.xticks(rotation=45)
-st.pyplot(fig1)
+    st.subheader("📊 Tren PM2.5 dalam Rentang Waktu")
+    fig1, ax1 = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=filtered_data, x='date_time', y='PM2.5', ax=ax1)
+    plt.xticks(rotation=45)
+    st.pyplot(fig1)
 
-st.subheader("🔗 Korelasi Antar Polutan")
-corr_matrix = filtered_data[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3']].corr()
-fig2, ax2 = plt.subplots(figsize=(10, 6))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, ax=ax2)
-st.pyplot(fig2)
+    st.subheader("🔗 Korelasi Antar Polutan")
+    corr_matrix = filtered_data[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3']].corr()
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, ax=ax2)
+    st.pyplot(fig2)
 
-elif analysis_option == "Analisis Temporal":
+elif analysis_option == "Analisis Temporal":  # ✅ Pastikan sejajar dengan `if`
     st.header("🕰️ Analisis Temporal")
     
     col1, col2 = st.columns(2)
@@ -119,7 +121,7 @@ elif analysis_option == "Analisis Temporal":
         'Tahunan': 'Y'
     }
     
-    df_resampled = df_all.resample(resample_map[time_resolution], on='date_time')[selected_pollutant].mean().reset_index()
+    df_resampled = filtered_data.resample(resample_map[time_resolution], on='date_time')[selected_pollutant].mean().reset_index()
     
     fig2, ax2 = plt.subplots(figsize=(12, 6))
     sns.lineplot(
@@ -132,11 +134,11 @@ elif analysis_option == "Analisis Temporal":
     plt.xticks(rotation=45)
     st.pyplot(fig2)
 
-elif analysis_option == "Korelasi Polutan":
+elif analysis_option == "Korelasi Polutan":  # ✅ Pastikan sejajar dengan `if`
     st.header("🔗 Analisis Korelasi")
     
     st.subheader("Matriks Korelasi Polutan")
-    corr_matrix = df_all[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'WSPM']].corr()
+    corr_matrix = filtered_data[['PM2.5', 'PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'WSPM']].corr()
     
     fig3, ax3 = plt.subplots(figsize=(12, 8))
     sns.heatmap(
@@ -148,6 +150,7 @@ elif analysis_option == "Korelasi Polutan":
         ax=ax3
     )
     st.pyplot(fig3)
+
 
 elif analysis_option == "Dampak Angin pada PM2.5":
     st.header("🌪️ Dampak Kecepatan Angin terhadap PM2.5")
