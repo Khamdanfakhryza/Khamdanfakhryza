@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 @st.cache_data
 def load_and_validate_data():
@@ -16,6 +17,10 @@ def load_and_validate_data():
     dataframes = {}
     missing_files = []
 
+    if not os.path.exists(folder_path):
+        st.error(f"❌ Folder '{folder_path}' tidak ditemukan! Pastikan path benar.")
+        return {}
+
     with st.spinner("🔍 Memuat dataset..."):
         for loc in locations:
             file_path = os.path.join(folder_path, f"PRSA_Data_{loc}_20130301-20170228.csv")
@@ -23,17 +28,22 @@ def load_and_validate_data():
             if os.path.isfile(file_path):
                 try:
                     df = pd.read_csv(file_path)
-                    if not df.empty:
-                        dataframes[loc] = df
-                    else:
+
+                    # Pastikan file tidak kosong dan memiliki kolom yang diperlukan
+                    required_cols = {'year', 'month', 'day', 'hour'}
+                    if df.empty or not required_cols.issubset(df.columns):
+                        st.warning(f"⚠️ File {file_path} tidak valid atau kosong.")
                         missing_files.append(file_path)
+                    else:
+                        dataframes[loc] = df
+
                 except Exception as e:
-                    st.error(f"❌ Gagal memuat {loc}: {str(e)}")
+                    st.error(f"❌ Gagal memuat {file_path}: {str(e)}")
             else:
                 missing_files.append(file_path)
 
     if missing_files:
-        st.warning("⚠️ File berikut tidak ditemukan:")
+        st.warning("⚠️ File berikut tidak ditemukan atau tidak valid:")
         for f in missing_files:
             st.write(f"- {os.path.basename(f)}")
     
@@ -44,25 +54,34 @@ def process_data(dataframes):
     """Memproses dan membersihkan data"""
     with st.spinner("🧹 Memproses data..."):
         try:
-            df_all = pd.concat(dataframes.values(), ignore_index=True)
-            
-            df_all['date_time'] = pd.to_datetime(
-                df_all[['year', 'month', 'day', 'hour']]
+            if not dataframes:
+                st.error("❌ Tidak ada dataset yang tersedia untuk diproses.")
+                st.stop()
+
+            combined_df = pd.concat(dataframes.values(), ignore_index=True)
+
+            # Buat kolom datetime dengan menangani error
+            combined_df['date_time'] = pd.to_datetime(
+                combined_df[['year', 'month', 'day', 'hour']], errors='coerce'
             )
-            
-            df_all = df_all.dropna()
-            
-            df_all['month'] = df_all['date_time'].dt.month
-            df_all['year'] = df_all['date_time'].dt.year
-            df_all['season'] = df_all['month'].apply(
+
+            # Hapus baris dengan date_time yang gagal dikonversi
+            combined_df = combined_df.dropna(subset=['date_time'])
+
+            # Tambahkan informasi musim berdasarkan bulan
+            combined_df['month'] = combined_df['date_time'].dt.month
+            combined_df['year'] = combined_df['date_time'].dt.year
+            combined_df['season'] = combined_df['month'].apply(
                 lambda x: 'Winter' if x in [12,1,2] else 
                 'Spring' if x in [3,4,5] else 
                 'Summer' if x in [6,7,8] else 'Autumn')
-            
-            return df_all
+
+            return combined_df
+
         except Exception as e:
             st.error(f"❌ Kesalahan pemrosesan data: {str(e)}")
             st.stop()
+
 
 st.sidebar.image("../images/logo.png")
 st.sidebar.title("Menu Navigasi")
