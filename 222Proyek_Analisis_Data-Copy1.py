@@ -3,28 +3,66 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-@st.cache_data  
-def load_data():
-    df_all = pd.read_csv("../clean_df_all.csv")
-    df_Aotizhongxin = pd.read_csv("../Air-quality-dataset/PRSA_Data_Aotizhongxin_20130301-20170228.csv")
-    df_Changping = pd.read_csv("../Air-quality-dataset/PRSA_Data_Changping_20130301-20170228.csv")
-    df_Dingling = pd.read_csv("../Air-quality-dataset/PRSA_Data_Dingling_20130301-20170228.csv")
-    df_Dongsi = pd.read_csv("../Air-quality-dataset\PRSA_Data_Dongsi_20130301-20170228.csv")
-    df_Guanyuan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Guanyuan_20130301-20170228.csv")
-    df_Gucheng = pd.read_csv("../Air-quality-dataset\PRSA_Data_Gucheng_20130301-20170228.csv")
-    df_Huairou = pd.read_csv("../Air-quality-dataset\PRSA_Data_Huairou_20130301-20170228.csv")
-    df_Nongzhanguan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Nongzhanguan_20130301-20170228.csv")
-    df_Shunyi = pd.read_csv("../Air-quality-dataset\PRSA_Data_Shunyi_20130301-20170228.csv")
-    df_Tiantan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Tiantan_20130301-20170228.csv")
-    df_Wanliu = pd.read_csv("../Air-quality-dataset\PRSA_Data_Wanliu_20130301-20170228.csv")
-    df_Wanshouxigong =pd.read_csv("../Air-quality-dataset\PRSA_Data_Wanshouxigong_20130301-20170228.csv")
-
-    df_all['date_time'] = pd.to_datetime(df_all['date_time'])
+@st.cache_data
+def load_and_validate_data():
+    """Memuat dan memvalidasi dataset"""
+    folder_path = "Air-quality-dataset"
+    locations = [
+        "Aotizhongxin", "Changping", "Dingling", "Dongsi", "Guanyuan", 
+        "Gucheng", "Huairou", "Nongzhanguan", "Shunyi", "Tiantan", 
+        "Wanliu", "Wanshouxigong"
+    ]
     
-    return df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong
+    dataframes = {}
+    missing_files = []
 
-df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong= load_data()
+    with st.spinner("🔍 Memuat dataset..."):
+        for loc in locations:
+            file_path = os.path.join(folder_path, f"PRSA_Data_{loc}_20130301-20170228.csv")
+            
+            if os.path.isfile(file_path):
+                try:
+                    df = pd.read_csv(file_path)
+                    if not df.empty:
+                        dataframes[loc] = df
+                    else:
+                        missing_files.append(file_path)
+                except Exception as e:
+                    st.error(f"❌ Gagal memuat {loc}: {str(e)}")
+            else:
+                missing_files.append(file_path)
 
+    if missing_files:
+        st.warning("⚠️ File berikut tidak ditemukan:")
+        for f in missing_files:
+            st.write(f"- {os.path.basename(f)}")
+    
+    return dataframes
+
+@st.cache_data
+def process_data(dataframes):
+    """Memproses dan membersihkan data"""
+    with st.spinner("🧹 Memproses data..."):
+        try:
+            df_all = pd.concat(dataframes.values(), ignore_index=True)
+            
+            df_all['date_time'] = pd.to_datetime(
+                df_all[['year', 'month', 'day', 'hour']]
+            )
+            
+            df_all = df_all.dropna()
+            
+            df_all['month'] = df_all['date_time'].dt.month
+            df_all['year'] = df_all['date_time'].dt.year
+            df_all['season'] = df_all['month'].apply(
+                lambda x: 'Winter' if x in [12,1,2] else 
+                'Spring' if x in [3,4,5] else 
+                'Summer' if x in [6,7,8] else 'Autumn')
+            
+            return df_all
+        except Exception as e:
+            st.error(f"❌ Kesalahan pemrosesan data: {str(e)}")
+            st.stop()
 
 st.sidebar.image("../images/logo.png")
 st.sidebar.title("Menu Navigasi")
